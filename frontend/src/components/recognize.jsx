@@ -33,17 +33,12 @@ const buttonStyleUploadImg = {
 
 function Recognize() {
 
-	const [selectedAvatar, setSelectedAvatar] = useState('');
 	const [fileName, setFileName] = useState('');
-	const [w, setW] = useState('');
+	const [overlayState, setOverlayState] = useState('none');
+	const [loaderState, setLoaderState] = useState(false);
 	const [recognizedText, setRecognizedText] = useState([]);
 	const [drag, setDrag] = useState(false);
 	const fileInputRef = useRef(null);
-	// useEffect(() => {
-
-	useEffect(() => {
-		axios.post("http://localhost:80/ai/recognize",);
-	}, []);
 	
 	async function recognizeFunc(url) {
 		try {
@@ -53,18 +48,16 @@ function Recognize() {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
 			});
-			console.log(response.data.result)
-			setW(response.data.result)
-			console.log(w)
 			setRecognizedText(response.data.result)
+			setOverlayState('none');
+			setLoaderState(false);
+
 		}
 		catch (err) {
 			console.log("SEND MESSAGE ERROR: ", err);
 		}
 	}
-	// recognizeFunc()
-// }, [])
-	// console.log(recognizedText.length)
+
 	function dragLeaveHandler(e) {
 		e.preventDefault();
 		setDrag(false);
@@ -83,6 +76,8 @@ function Recognize() {
 		const droppedFiles = e.dataTransfer.files;
 	
 		if (droppedFiles.length > 0) {
+			setOverlayState('');
+			setLoaderState(true);
 			const fileToUpload = droppedFiles[0];
 			setFileName(fileToUpload.name);
 	
@@ -101,7 +96,6 @@ function Recognize() {
 			.then(response => response.json())
 			.then(data => {
 				console.log('Cloudinary response:', data);
-				setSelectedAvatar(data.secure_url)
 				recognizeFunc(data.secure_url)
 			})
 			.catch(error => {
@@ -112,6 +106,8 @@ function Recognize() {
 
 
 	const handleFileUpload = (event) => {
+		setOverlayState('');
+		setLoaderState(true);
         const file = event.target.files;
 		
 		if (file.length > 0) {
@@ -133,7 +129,7 @@ function Recognize() {
 			.then(response => response.json())
 			.then(data => {
 				console.log('Cloudinary response:', data);
-				setSelectedAvatar(data.secure_url)
+				recognizeFunc(data.secure_url)
 			})
 			.catch(error => {
 				console.error('Error uploading file:', error);
@@ -152,10 +148,7 @@ function Recognize() {
 			<div key={innerIndex}>{text}</div>
 		  ))}
 		</div>
-	  ));
-	  
-
-	console.log('recognizedTextElements', recognizedTextElements.props)
+	));
 
 	return (
 		<>
@@ -219,20 +212,26 @@ function Recognize() {
 										BROWSE
 									</Button>
 								</div>
+								{ loaderState === true ?
+								<div className="loader-container">
+									<span class="loader"></span>
+								</div>
+								: null
+								}
 							</div>
 							}
 						</div>
-					</div>
 					{ recognizedText.length > 0 ?
-					<div style={{width: '100%', textAlign: '-webkit-center', marginTop: '20px', paddingBottom: '50px'}} className="recognized-text">
+					<div style={{width: '70vw', textAlign: '-webkit-center', marginTop: '20px', paddingBottom: '50px'}} className="recognized-text">
 						<div style={{width: 'fit-content', borderRadius: 10, display: 'flex', background: '#2f30347a', border: '1px solid rgb(34, 34, 37)', background: 'rgba(47, 48, 52, 0.48)', padding: '10px 30px 10px 30px'}}>
 							<h2 style={{color: '#c7c7c7', fontFamily: 'Montserrat', fontSize: '18px', fontWeight: '100'}}>{recognizedTextElements}</h2>
 						</div>
 					</div>
 					: null}
+					</div>
 				</div>
-
 			</div>
+			<div className="overlay" style={{display: overlayState}}></div>
 		</Container>
 		</>
 	)
