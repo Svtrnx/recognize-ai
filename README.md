@@ -15,7 +15,7 @@ ___
 Recognize AI is a neural network that scans a photo and extracts text from it, works in languages: en, ru, be, bg, uk, mn.
 The stack used **React** for the frontend, **Python** to create the neural network and API, and **PHP** for the backend.
 
-### Demonstation Video:
+### Demonstration Video:
 
 <img src="./frontend/src/video/recognizeAI.gif" alt="recognize">
 
