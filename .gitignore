@@ -1,0 +1,6 @@
+# .gitignore
+AI-API/env/Lib/site-packages/cv2/cv2.pyd
+AI-API/env/Lib/site-packages/torch/lib/dnnl.lib
+AI-API/env/Lib/site-packages/torch/lib/torch_cpu.dll
+AI-API/env/Lib/site-packages/torch/lib/dnnl.lib
+AI-API/env/Lib/site-packages/torch/lib/torch_cpu.dll
